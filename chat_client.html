@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Client</title>
+</head>
+<body>
+    <h3>Chat Client</h3>
+    <div id="messages"></div>
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Type your message...">
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        var conn = new WebSocket('ws://localhost:8080');
+
+        conn.onopen = function (event) {
+            console.log('Connected to the server');
+        };
+
+        conn.onmessage = function (event) {
+            var message = event.data;
+            var messagesContainer = document.getElementById('messages');
+            var messageElement = document.createElement('div');
+            messageElement.innerHTML = message;
+            messagesContainer.appendChild(messageElement);
+        };
+
+        document.getElementById('messageForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var messageInput = document.getElementById('messageInput');
+            var message = messageInput.value;
+            conn.send(message);
+            messageInput.value = '';
+        });
+    </script>
+</body>
+</html>
